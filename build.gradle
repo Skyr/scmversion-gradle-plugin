@@ -1,0 +1,24 @@
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+version = '1.0.0-SNAPSHOT'
+group = 'de.ploing.scmversion'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
+    compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
+    // groovy localGroovy()
+    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+}
+
+task createWrapper(type : Wrapper) {
+  gradleVersion = '1.11'
+}
+
