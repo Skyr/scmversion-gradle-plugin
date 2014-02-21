@@ -8,6 +8,11 @@ import org.gradle.api.DefaultTask
 abstract class SCMVersionTask extends DefaultTask {
     final SCMOperations scmOperations = SCMVersionPlugin.scmOperations
 
+    /**
+     * Tries to extract the version information from a tag string
+     * @param tag
+     * @return the version if found, null if not found
+     */
     String extractVersion(String tag) {
         def pattern = ~ project.scmversion.releaseTagPattern
         def m = pattern.matcher(tag)
@@ -18,6 +23,10 @@ abstract class SCMVersionTask extends DefaultTask {
         }
     }
 
+    /**
+     * Tries to extract a version information from all tags of the current head
+     * @return first version match, null if none found
+     */
     String getHeadVersion() {
         def version = null
         scmOperations.headTags.each { tag ->
@@ -29,6 +38,10 @@ abstract class SCMVersionTask extends DefaultTask {
         return version
     }
 
+    /**
+     * Tries to extract the version information from all tags of the repo
+     * @return a list with version strings (never null)
+     */
     List<String> getVersions() {
         def result = []
         scmOperations.tags.each { tag ->
@@ -40,10 +53,21 @@ abstract class SCMVersionTask extends DefaultTask {
         return result
     }
 
+    /**
+     * Sorts all versions (from repo tags) according to the sort closure from the configuration
+     * @return sorted list (never null)
+     */
     List<String> getSortedVersions() {
         return versions.sort(project.scmversion.versionComparator)
     }
 
+    /**
+     * Gets (or calculates) the version of the repo. If the current head has a version tag, this version is
+     * returned. Otherwise, the highest version number is determined, increased, and concatenated with the
+     * snapshot suffix from the configuration.
+     * @param releaseTagOnDirty whether a release tag should be set if the repo is dirty (i.e. has modified files)
+     * @return a version string
+     */
     String getCurrentVersion(boolean releaseTagOnDirty) {
         def version = null
         if (releaseTagOnDirty || !scmOperations.isRepoDirty()) {
