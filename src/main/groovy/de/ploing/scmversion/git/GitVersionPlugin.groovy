@@ -11,7 +11,7 @@ class GitVersionPlugin extends SCMVersionPlugin {
     @Override
     SCMOperations setupSCM(Project project) {
         try {
-            return new GitOperations()
+            return new GitOperations(project.projectDir)
         } catch (IllegalArgumentException e) {
             logger.warn('No git repository found. git version plugin not initialized.')
             return null

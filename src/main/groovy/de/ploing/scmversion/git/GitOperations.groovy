@@ -15,9 +15,9 @@ class GitOperations implements SCMOperations {
     Repository repository
     Git git
 
-    GitOperations() {
+    GitOperations(File baseDir) {
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
-        repository = builder.readEnvironment().findGitDir(new File('.').absoluteFile).build()
+        repository = builder.readEnvironment().findGitDir(baseDir.absoluteFile).build()
         ObjectId head = repository.resolve('HEAD')
         if (head==null) {
             throw new IllegalArgumentException('Repository has no HEAD')
