@@ -12,6 +12,11 @@ class SCMVersionPluginExtension {
             a.split('\\.').collect { Integer.parseInt(it) },
             b.split('\\.').collect { Integer.parseInt(it) })
     }
+    Closure incVersion = { versionString ->
+        def versions = versionString.split('\\.').collect { Integer.parseInt(it) }
+        versions[-1] += 1
+        return versions.join('.')
+    }
 
     static def versionHeadTail(List<Integer> ver) {
         if (ver.size()>0) {
