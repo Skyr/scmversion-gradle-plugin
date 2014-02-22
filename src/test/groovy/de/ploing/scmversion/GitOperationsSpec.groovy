@@ -12,40 +12,13 @@ import java.util.zip.ZipInputStream
 class GitOperationsSpec extends Specification {
     static File testRepoDir
 
-    def extractZip(InputStream input, File destDir) {
-        byte[] buffer = new byte[1024]
-        ZipInputStream zis = new ZipInputStream(input);
-        ZipEntry ze = zis.getNextEntry();
-        while(ze!=null) {
-            String fileName = ze.getName()
-            File newFile = new File(destDir, fileName)
-            if (ze.isDirectory()) {
-                newFile.mkdirs()
-            } else {
-                new File(newFile.getParent()).mkdirs()
-                FileOutputStream fos = new FileOutputStream(newFile)
-                int len
-                while ((len=zis.read(buffer))>0) {
-                    fos.write(buffer, 0, len)
-                }
-                fos.close()
-            }
-            zis.closeEntry()
-            ze = zis.getNextEntry()
-        }
-        //close last ZipEntry
-        zis.closeEntry()
-        zis.close()
-        input.close()
-    }
-
     def setupSpec() {
         testRepoDir = new File('./build/testrepos').absoluteFile
         if (!testRepoDir.exists()) {
             testRepoDir.mkdirs()
         }
         ['emptyrepo', 'linearrepo', 'mergedrepo'].each { name ->
-            extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
+            Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
         }
     }
 
