@@ -57,7 +57,28 @@ class GitOperationsSpec extends Specification {
             thrown(IllegalArgumentException)
     }
 
-    def "Iterator gives all tags in linear history"() {
+    def "Test repo is clean"() {
+        setup:
+            SCMOperations ops = new GitOperations(new File(testRepoDir, 'linearrepo'))
+        when:
+            def isDirty = ops.isRepoDirty()
+        then:
+            isDirty==false
+    }
+
+    def "Creating a file renders repo dirty"() {
+        setup:
+            SCMOperations ops = new GitOperations(new File(testRepoDir, 'linearrepo'))
+            File tmpFile = new File(testRepoDir, 'linearrepo/test.tmp')
+        when:
+            tmpFile.createNewFile()
+            def isDirty = ops.isRepoDirty()
+            tmpFile.delete()
+        then:
+            isDirty==true
+    }
+
+    def "Tags gives all tags in linear history"() {
         setup:
             SCMOperations ops = new GitOperations(new File(testRepoDir, 'linearrepo'))
         when:
@@ -68,11 +89,20 @@ class GitOperationsSpec extends Specification {
             tags.size()==4
     }
 
-    def "Iterator gives all tags in branched history"() {
+    def "HeadTags gives tags of head in linear history"() {
         setup:
-            println 'foo'
+            SCMOperations ops = new GitOperations(new File(testRepoDir, 'linearrepo'))
+        when:
+            def head = ops.headVersion
+            def tags = ops.headTags
+        then:
+            head!=null
+            tags.size()==1
+    }
+
+    def "Tags gives all tags in branched history"() {
+        setup:
             SCMOperations ops = new GitOperations(new File(testRepoDir, 'mergedrepo'))
-            println 'foo'
         when:
             def head = ops.headVersion
             def tags = ops.tags
