@@ -1,0 +1,5 @@
+= scmversion gradle plugin
+
+image:https://travis-ci.org/Skyr/scmversion-gradle-plugin.png?branch=master["Build Status", link="https://travis-ci.org/Skyr/scmversion-gradle-plugin"]
+image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Coverage Status", link="https://coveralls.io/r/Skyr/scmversion-gradle-plugin"]
+
