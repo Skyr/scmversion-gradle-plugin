@@ -1,21 +1,39 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'net.saliman:gradle-cobertura-plugin:2.2.2'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.2.4'
+  }
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'cobertura'
+apply plugin: 'coveralls'
 
 version = '1.0.0-SNAPSHOT'
 group = 'de.ploing.scmversion'
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    compile gradleApi()
-    // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
-    compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
-    // groovy localGroovy()
-    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+  compile gradleApi()
+  // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
+  compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
+  // groovy localGroovy()
+  testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+}
+
+cobertura {
+  coverageFormats = ['xml','html']
+  coverageSourceDirs = sourceSets.main.groovy.srcDirs
 }
 
 task createWrapper(type : Wrapper) {
