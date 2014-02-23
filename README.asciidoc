@@ -1,5 +1,84 @@
 = scmversion gradle plugin
 
+Your software should be versioned, and the assigned version numbers should be represented somewhere in your source control management.
+This plugin detects tags of your source control management matching a given pattern, extracts the version number, and makes it available both to Gradle and optionally your program.
+It rids you of the nuisance to keep the version number in your scm and the version number for your deployment in sync.
+
 image:https://travis-ci.org/Skyr/scmversion-gradle-plugin.png?branch=master["Build Status", link="https://travis-ci.org/Skyr/scmversion-gradle-plugin"]
 image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Coverage Status", link="https://coveralls.io/r/Skyr/scmversion-gradle-plugin"]
+
+== Supported SCMs
+
+Currently, only git is supported. The git plugin is applied as given below:
+
+[source,groovy]
+----
+apply plugin: 'gitversion'
+----
+
+The plugin can be easily extended to new scm systems.
+
+== Usage
+
+=== Set Gradle's version property
+
+When the plugin is applied, it will replace the `version` property of gradle with the one determined from the scm tags:
+
+* If the current scm state is on a revision with a version tag, and if no files are modified (i.e. the repo is not dirty), the version number from the version tag is used
+* Otherwise, the highest version number from a tag is determined, the least significant number is increased by one and appended by the snapshot suffix
+* If no version tag is found, the version number `0` is assumed
+
+The version property is e.g. used by the maven plugin for determining the version inormation for assembled jar files.
+
+The task `setVersion` is provided for this purpose; it is automatically called after setting up the project.
+
+=== Write scm information to property file
+
+If a property filename is configured, the plugin will write the current scm status to a property file:
+
+[source,groovy]
+----
+scmversion {
+  propertyFilename = 'scmversion.properties'
+}
+----
+
+The Gradle task `createVersionFile` will put a file named `scmversion.properties` to the directory `build/resources/main`.
+The property file may look like the following:
+
+----
+#SCM version information
+version=1.0.3-SNAPSHOT
+rev=d460689dd68071442beeee4d984a85f9996d7a37
+dirty=false
+----
+
+=== Custom revision tag pattern
+
+The format of version tags can be customized using a regular expression; the default looks like the following:
+
+[source,groovy]
+----
+scmversion {
+  releaseTagPattern = 'version-([0-9.]*)'
+}
+----
+
+The regular expression fulfills two purposes:
+
+* Determine if the tag is a version tag
+* Extract the version number
+
+The matched part will be used as version number; if you choose to use an alternate version number scheme not matching the regex above: Read on :-)
+
+=== Custom version number scheme
+
+The default configuration handles version number consisting of an arbitrary number of version number parts separated by a dot (e.g. "1.0" or "2.0.3").
+If you choose to use a different pattern, you not only have to adapt the `releaseTagPattern`regex, but re-implement the following two closures:
+
+`versionComparator`::
+  A closure taking two version numbers as parameters. It returns -1/0/1 if the first version number is smaller/equal/larger than the second.
+`incVersion`::
+  A closure taking one version number as parameter and returns a new version string.
+  The purpose of this closure is to determine the version string used for snapshot versions, i.e. the "next" version after the latest one.
 
