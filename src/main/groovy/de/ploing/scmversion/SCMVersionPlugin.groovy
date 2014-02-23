@@ -32,11 +32,16 @@ abstract class SCMVersionPlugin implements Plugin<Project> {
 
     void autoconfigSetVersionTask(Task setVersionTask) {
         setVersionTask.project.gradle.afterProject {
-            setVersionTask.actions.head().execute(setVersionTask)
+            setVersionTask.setVersion()
         }
     }
 
     void autoconfigCreateVersionFileTask(Task createVersionFileTask) {
+        createVersionFileTask.project.gradle.afterProject {
+            createVersionFileTask.project.getTasksByName('processResources', false).each { task ->
+                task.dependsOn createVersionFileTask
+            }
+        }
     }
 
     /**
