@@ -82,3 +82,9 @@ If you choose to use a different pattern, you not only have to adapt the `releas
   A closure taking one version number as parameter and returns a new version string.
   The purpose of this closure is to determine the version string used for snapshot versions, i.e. the "next" version after the latest one.
 
+== License
+
+Copyright 2014 by Stefan Schlott
+
+Licensed under the http://www.apache.org/licenses/LICENSE-2.0[Apache License, Version 2.0].
+
