@@ -7,12 +7,23 @@ It rids you of the nuisance to keep the version number in your scm and the versi
 image:https://travis-ci.org/Skyr/scmversion-gradle-plugin.png?branch=master["Build Status", link="https://travis-ci.org/Skyr/scmversion-gradle-plugin"]
 image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Coverage Status", link="https://coveralls.io/r/Skyr/scmversion-gradle-plugin"]
 
-== Supported SCMs
+== Usage, Supported SCMs
 
 Currently, only git is supported. The git plugin is applied as given below:
 
 [source,groovy]
 ----
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url 'http://dl.bintray.com/skyr/maven' }
+  }
+
+  dependencies {
+    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.5.0'
+  }
+}
+
 apply plugin: 'gitversion'
 ----
 
