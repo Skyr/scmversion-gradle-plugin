@@ -6,6 +6,7 @@ buildscript {
   dependencies {
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.2'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.2.4'
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
   }
 }
 
@@ -13,11 +14,13 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'cobertura'
 apply plugin: 'coveralls'
+apply plugin: 'bintray'
 
 version = '1.0.0-SNAPSHOT'
-group = 'de.ploing.scmversion'
+group = 'de.ploing.gradle'
 
 repositories {
   mavenCentral()
@@ -34,6 +37,50 @@ dependencies {
 cobertura {
   coverageFormats = ['xml','html']
   coverageSourceDirs = sourceSets.main.groovy.srcDirs
+}
+
+publishing {
+  publications {
+    mavenCustom(MavenPublication) {
+      from components.java
+        pom.withXml {
+          asNode().with {
+            appendNode('description', 'A Gradle plugin that exports information from the version control system to the build system')
+            appendNode('url', 'http://stefan.ploing.de/projects/scmversion-gradle-plugin/')
+            appendNode('inceptionYear', '2014')
+            appendNode('licenses')
+            .appendNode('license')
+            .appendNode('name', 'The Apache Software License, Version 2.0').parent()
+            .appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt').parent()
+            .appendNode('distribution', 'repo')
+            appendNode('scm')
+            .appendNode('url', 'https://github.com/Skyr/scmversion-gradle-plugin')
+            Node developers = appendNode('developers')
+            developers.appendNode('developer')
+            .appendNode('id', 'sschlott').parent()
+            .appendNode('name', 'Stefan Schlott').parent()
+            .appendNode('roles')
+            .appendNode('role', 'Developer')
+        }
+      }
+    }
+  }
+}
+
+if(!project.hasProperty('bintrayUsername')) ext.bintrayUsername = System.env.BINTRAY_USERNAME
+if(!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = System.env.BINTRAY_APIKEY
+
+bintray {
+  user = project.bintrayUsername
+  key = project.bintrayApiKey
+  publications = ['mavenCustom']
+  pkg {
+    repo = 'maven'
+    name = 'scmversion-gradle-plugin'
+    desc = 'A Gradle plugin that exports information from the version control system to the build system'
+    licenses = ['Apache-2.0']
+    labels = ['gradle', 'plugin', 'scmversion']
+  }
 }
 
 task createWrapper(type : Wrapper) {
