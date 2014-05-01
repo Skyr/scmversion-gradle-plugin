@@ -1,0 +1,8 @@
+= Release notes
+
+== 0.5.0
+
+First published version. Currently works only with git,
+but modularisation allows adaption of other scm systems.
+Perhaps svn is soon to come ;-)
+
