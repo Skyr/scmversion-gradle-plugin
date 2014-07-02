@@ -6,7 +6,7 @@ buildscript {
   dependencies {
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.2'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.2.4'
-    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.4.1'
   }
 }
 
@@ -17,9 +17,10 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'cobertura'
 apply plugin: 'coveralls'
-apply plugin: 'bintray'
+apply plugin: 'com.jfrog.bintray'
 
 version = '0.5.0'
+//version = '0.5.1-SNAPSHOT'
 group = 'de.ploing.gradle'
 
 repositories {
@@ -39,10 +40,29 @@ cobertura {
   coverageSourceDirs = sourceSets.main.groovy.srcDirs
 }
 
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'source'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
 publishing {
   publications {
     mavenCustom(MavenPublication) {
       from components.java
+        artifact sourceJar {
+            classifier "source"
+        }
         pom.withXml {
           asNode().with {
             appendNode('description', 'A Gradle plugin that exports information from the version control system to the build system')
