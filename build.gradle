@@ -32,8 +32,11 @@ dependencies {
   // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
   compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
   // groovy localGroovy()
-  testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+  testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+    exclude group: 'org.codehaus.groovy'  // Spock seems to pull in incompatible version
+  }
 }
+
 
 cobertura {
   coverageFormats = ['xml','html']
@@ -104,6 +107,6 @@ bintray {
 }
 
 task createWrapper(type : Wrapper) {
-  gradleVersion = '1.11'
+  gradleVersion = '2.0'
 }
 
