@@ -20,11 +20,11 @@ buildscript {
   }
 
   dependencies {
-    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.5.0'
+    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.6.0'
   }
 }
 
-apply plugin: 'gitversion'
+apply plugin: 'de.ploing.scmversion'
 ----
 
 The plugin can be easily extended to new scm systems.

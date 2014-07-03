@@ -19,8 +19,7 @@ apply plugin: 'cobertura'
 apply plugin: 'coveralls'
 apply plugin: 'com.jfrog.bintray'
 
-version = '0.5.0'
-//version = '0.5.1-SNAPSHOT'
+version = '0.6.0-SNAPSHOT'
 group = 'de.ploing.gradle'
 
 repositories {
