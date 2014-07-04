@@ -74,7 +74,7 @@ class GitVersionTaskSpec extends Specification {
             Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
         when:
             project.apply plugin: SCMVersionPlugin
-            SCMVersionPlugin.scmOperations
+            project.tasks.scmInit.scmInit()
         then:
             project.scmversion.scmSystem == 'git'
     }
@@ -85,7 +85,7 @@ class GitVersionTaskSpec extends Specification {
         when:
             project.apply plugin: SCMVersionPlugin
             project.scmversion.scmSystem = 'git'
-            SCMVersionPlugin.scmOperations
+            project.tasks.scmInit.scmInit()
         then:
             project.scmversion.scmSystem == 'git'
     }
@@ -96,7 +96,7 @@ class GitVersionTaskSpec extends Specification {
         when:
             project.apply plugin: SCMVersionPlugin
             project.scmversion.scmSystem = 'doesnotexist'
-            SCMVersionPlugin.scmOperations
+            project.tasks.scmInit.scmInit()
         then:
             project.scmversion.scmSystem == null
     }

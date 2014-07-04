@@ -24,10 +24,10 @@ import org.gradle.api.Task
  * @author Stefan Schlott
  */
 class SCMVersionPlugin implements Plugin<Project> {
-    static def project
-    static def logger
-    private static boolean scmOpsInitialized = false
-    private static SCMOperations scmOps = null
+    def project
+    def logger
+    private boolean scmOpsInitialized = false
+    private SCMOperations scmOps = null
     static final List<SCMDetector> scmPlugins = [ new GitDetector() ]
 
     @Override
@@ -37,8 +37,15 @@ class SCMVersionPlugin implements Plugin<Project> {
         // Register extension first - avoid gradle errors in case of initialization problems
         project.extensions.create('scmversion', SCMVersionPluginExtension)
         // Setup tasks
-        Task setVersionTask = project.task('setVersion', type: SetVersionTask)
-        Task createVersionFileTask = project.task('createVersionFile', type: CreateVersionFileTask)
+        Task initTask = project.task('scmInit', type: InitTask, {
+            plugin = this
+        })
+        Task setVersionTask = project.task('setVersion', type: SetVersionTask, {
+            plugin = this
+        })
+        Task createVersionFileTask = project.task('createVersionFile', type: CreateVersionFileTask, {
+            plugin = this
+        })
         autoconfigSetVersionTask(setVersionTask)
         autoconfigCreateVersionFileTask(createVersionFileTask)
     }
@@ -62,7 +69,7 @@ class SCMVersionPlugin implements Plugin<Project> {
      * @param project
      * @return null if the initialization failed for some reason, proper instance otherwise
      */
-    static SCMOperations getScmOperations() {
+    SCMOperations getScmOperations() {
         if (scmOpsInitialized) {
             return scmOps
         }

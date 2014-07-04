@@ -25,8 +25,8 @@ class CreateVersionFileTask extends SCMVersionTask {
     def createVersionFile() {
         if (project.scmversion.propertyFilename!=null) {
             Properties props = new Properties()
-            props.setProperty('rev', scmOperations.headVersion)
-            props.setProperty('dirty', scmOperations.isRepoDirty().toString())
+            props.setProperty('rev', plugin.scmOperations.headVersion)
+            props.setProperty('dirty', plugin.scmOperations.isRepoDirty().toString())
             props.setProperty('version', getCurrentVersion(false))
             File outFile = new File(project.buildDir, 'resources/main/' + project.scmversion.propertyFilename)
             outFile.parentFile.mkdirs()

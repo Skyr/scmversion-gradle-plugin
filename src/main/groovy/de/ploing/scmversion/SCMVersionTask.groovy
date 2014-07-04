@@ -21,9 +21,7 @@ import org.gradle.api.DefaultTask
  * @author Stefan Schlott
  */
 abstract class SCMVersionTask extends DefaultTask {
-    SCMOperations getScmOperations() {
-        return SCMVersionPlugin.getScmOperations()
-    }
+    SCMVersionPlugin plugin
 
     /**
      * Tries to extract the version information from a tag string
@@ -46,7 +44,7 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     String getHeadVersion() {
         def version = null
-        scmOperations.headTags.each { tag ->
+        plugin.scmOperations.headTags.each { tag ->
             def tagVersion = extractVersion(tag)
             if (tagVersion!=null) {
                 version = tagVersion
@@ -61,7 +59,7 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     List<String> getVersions() {
         def result = []
-        scmOperations.tags.each { tag ->
+        plugin.scmOperations.tags.each { tag ->
             def tagVersion = extractVersion(tag)
             if (tagVersion!=null) {
                 result.add(tagVersion)
@@ -87,7 +85,7 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     String getCurrentVersion(boolean releaseTagOnDirty) {
         def version = null
-        if (releaseTagOnDirty || !scmOperations.isRepoDirty()) {
+        if (releaseTagOnDirty || !plugin.scmOperations.isRepoDirty()) {
             version = headVersion
         }
         if (version==null) {

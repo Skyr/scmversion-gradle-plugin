@@ -23,7 +23,7 @@ import org.gradle.api.tasks.TaskAction
 class SetVersionTask extends SCMVersionTask {
     @TaskAction
     def setVersion() {
-        if (scmOperations.isRepoDirty()) {
+        if (plugin.scmOperations.isRepoDirty()) {
             logger.info('Repo is dirty, not checking for release tag')
         }
         def version = getCurrentVersion(false)
