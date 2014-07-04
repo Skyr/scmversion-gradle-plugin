@@ -1,4 +1,4 @@
-package de.ploing.scmversion
+package de.ploing.scmversion.task
 
 import org.gradle.api.tasks.TaskAction
 

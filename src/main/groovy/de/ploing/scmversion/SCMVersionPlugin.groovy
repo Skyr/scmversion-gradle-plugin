@@ -16,6 +16,9 @@
 package de.ploing.scmversion
 
 import de.ploing.scmversion.git.GitDetector
+import de.ploing.scmversion.task.CreateVersionFileTask
+import de.ploing.scmversion.task.InitTask
+import de.ploing.scmversion.task.SetVersionTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task

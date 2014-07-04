@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ploing.scmversion
+package de.ploing.scmversion.task
 
+import de.ploing.scmversion.SCMVersionPlugin
 import org.gradle.api.DefaultTask
 
 /**
