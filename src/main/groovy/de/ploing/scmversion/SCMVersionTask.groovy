@@ -21,7 +21,9 @@ import org.gradle.api.DefaultTask
  * @author Stefan Schlott
  */
 abstract class SCMVersionTask extends DefaultTask {
-    final SCMOperations scmOperations = SCMVersionPlugin.scmOperations
+    SCMOperations getScmOperations() {
+        return SCMVersionPlugin.getScmOperations()
+    }
 
     /**
      * Tries to extract the version information from a tag string

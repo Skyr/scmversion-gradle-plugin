@@ -15,7 +15,6 @@
  */
 package de.ploing.scmversion
 
-import de.ploing.scmversion.git.GitVersionPlugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
@@ -60,21 +59,53 @@ class GitVersionTaskSpec extends Specification {
     def "Version of repo on revision tag is set correctly"() {
         setup:
             Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'linearrepo')).build()
-        when:
-            project.apply plugin: GitVersionPlugin
+            project.apply plugin: SCMVersionPlugin
             project.scmversion {
                 releaseTagPattern = 'rev-([0-9.]*)'
             }
+        when:
             project.tasks.setVersion.setVersion()
         then:
             project.version=='1.0'
+    }
+
+    def "scm autodetection works properly"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
+        when:
+            project.apply plugin: SCMVersionPlugin
+            SCMVersionPlugin.scmOperations
+        then:
+            project.scmversion.scmSystem == 'git'
+    }
+
+    def "git plugin is properly initialized"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
+        when:
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion.scmSystem = 'git'
+            SCMVersionPlugin.scmOperations
+        then:
+            project.scmversion.scmSystem == 'git'
+    }
+
+    def "Unknown scm erases scmSystem info"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
+        when:
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion.scmSystem = 'doesnotexist'
+            SCMVersionPlugin.scmOperations
+        then:
+            project.scmversion.scmSystem == null
     }
 
     def "Snapshot version is set correctly"() {
         setup:
             Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
         when:
-            project.apply plugin: GitVersionPlugin
+            project.apply plugin: SCMVersionPlugin
             project.scmversion {
                 releaseTagPattern = 'rev-([0-9.]*)'
             }
@@ -88,7 +119,7 @@ class GitVersionTaskSpec extends Specification {
             Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'snapshotrepo')).build()
             File propFile = new File(testRepoDir, 'snapshotrepo/build/resources/main/scminfo.properties')
         when:
-            project.apply plugin: GitVersionPlugin
+            project.apply plugin: SCMVersionPlugin
             project.scmversion {
                 releaseTagPattern = 'rev-([0-9.]*)'
                 propertyFilename = propFile.name

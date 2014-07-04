@@ -15,6 +15,7 @@
  */
 package de.ploing.scmversion
 
+import de.ploing.scmversion.git.GitDetector
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -22,27 +23,24 @@ import org.gradle.api.Task
 /**
  * @author Stefan Schlott
  */
-abstract class SCMVersionPlugin implements Plugin<Project> {
-    def logger
-    static SCMOperations scmOperations = null
+class SCMVersionPlugin implements Plugin<Project> {
+    static def project
+    static def logger
+    private static boolean scmOpsInitialized = false
+    private static SCMOperations scmOps = null
+    static final List<SCMDetector> scmPlugins = [ new GitDetector() ]
 
     @Override
     void apply(Project project) {
+        this.project = project
         logger = project.logger
         // Register extension first - avoid gradle errors in case of initialization problems
         project.extensions.create('scmversion', SCMVersionPluginExtension)
-        try {
-            scmOperations = setupSCM(project)
-        } catch (e) {
-            logger.warn("Unable to initialize scm version plugin: " + e.message)
-        }
-        // If plugin successfully initialized: Setup tasks
-        if (scmOperations!=null) {
-            Task setVersionTask = project.task('setVersion', type: SetVersionTask)
-            Task createVersionFileTask = project.task('createVersionFile', type: CreateVersionFileTask)
-            autoconfigSetVersionTask(setVersionTask)
-            autoconfigCreateVersionFileTask(createVersionFileTask)
-        }
+        // Setup tasks
+        Task setVersionTask = project.task('setVersion', type: SetVersionTask)
+        Task createVersionFileTask = project.task('createVersionFile', type: CreateVersionFileTask)
+        autoconfigSetVersionTask(setVersionTask)
+        autoconfigCreateVersionFileTask(createVersionFileTask)
     }
 
     void autoconfigSetVersionTask(Task setVersionTask) {
@@ -60,9 +58,45 @@ abstract class SCMVersionPlugin implements Plugin<Project> {
     }
 
     /**
-     * Set up the scm operations implementation
+     * Set up the scm operations implementation. Do autodetection if not configured
      * @param project
      * @return null if the initialization failed for some reason, proper instance otherwise
      */
-    abstract SCMOperations setupSCM(Project project)
+    static SCMOperations getScmOperations() {
+        if (scmOpsInitialized) {
+            return scmOps
+        }
+
+        try {
+            def detector
+            if (project.scmversion.scmSystem==null) {
+                // Do autodetection
+                detector = scmPlugins.find { d ->
+                    d.isInUse(project.projectDir)
+                }
+                if (detector==null) {
+                    throw new RuntimeException('No scm detected')
+                }
+            } else {
+                // Find selected scm
+                detector = scmPlugins.find { d ->
+                    d.name==project.scmversion.scmSystem
+                }
+                if (detector==null) {
+                    throw new RuntimeException("Implementation for scm ${project.scmversion.scmSystem} not found")
+                }
+                if (!detector.isInUse(project.projectDir)) {
+                    throw new RuntimeException("scm ${project.scmversion.scmSystem} selected, but not in use")
+                }
+            }
+            project.scmversion.scmSystem = detector.name
+            scmOps = detector.getOperations(project.projectDir)
+        } catch (e) {
+            project.scmversion.scmSystem = null
+            scmOps = null
+            logger.warn("Unable to initialize scm version plugin: " + e.message)
+        }
+        scmOpsInitialized = true
+        return scmOps
+    }
 }

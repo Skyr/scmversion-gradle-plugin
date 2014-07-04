@@ -18,6 +18,6 @@ class GitDetector implements SCMDetector {
 
     @Override
     SCMOperations getOperations(File baseDir) {
-        return new GitVersionPlugin(baseDir)
+        return new GitOperations(baseDir)
     }
 }

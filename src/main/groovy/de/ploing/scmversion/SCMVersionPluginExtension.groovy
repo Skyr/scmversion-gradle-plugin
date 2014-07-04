@@ -21,6 +21,7 @@ package de.ploing.scmversion
 class SCMVersionPluginExtension {
     String releaseTagPattern = 'version-([0-9.]*)'
     String snapshotSuffix = '-SNAPSHOT'
+    String scmSystem
     String propertyFilename
     Closure versionComparator = { a,b ->
         return compareVersions(
