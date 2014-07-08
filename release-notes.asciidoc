@@ -1,5 +1,11 @@
 = Release notes
 
+== 0.6.0
+
+Adapted for Gradle 2.0, published on jcenter.
+Plugin identifier changed according to the Gradle 2 specs,
+please see README. Autodetection of scm system in use.
+
 == 0.5.0
 
 First published version. Currently works only with git,

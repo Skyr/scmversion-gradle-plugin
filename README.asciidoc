@@ -9,14 +9,24 @@ image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Covera
 
 == Usage, Supported SCMs
 
-Currently, only git is supported. The git plugin is applied as given below:
+The plugin is applied as given below:
+
+Gradle 2.0 or later:
+
+[source,groovy]
+----
+plugins {
+  id "de.ploing.scmversion" version "0.6.0"
+}
+----
+
+Older versions of Gradle:
 
 [source,groovy]
 ----
 buildscript {
   repositories {
-    mavenCentral()
-    maven { url 'http://dl.bintray.com/skyr/maven' }
+    jcenter()
   }
 
   dependencies {
@@ -27,6 +37,9 @@ buildscript {
 apply plugin: 'de.ploing.scmversion'
 ----
 
+In contrast to earlier versions, the scm in use is automatically detected, no more need to have separate plugins for different scms.
+
+Currently, only git is supported.
 The plugin can be easily extended to new scm systems.
 
 == Usage

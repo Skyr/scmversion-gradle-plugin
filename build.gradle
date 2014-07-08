@@ -19,7 +19,10 @@ apply plugin: 'cobertura'
 apply plugin: 'coveralls'
 apply plugin: 'com.jfrog.bintray'
 
-version = '0.6.0-SNAPSHOT'
+// Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
+
+//version = '0.6.0-SNAPSHOT'
+version = '0.6.0'
 group = 'de.ploing.gradle'
 
 repositories {
