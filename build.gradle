@@ -21,8 +21,8 @@ apply plugin: 'com.jfrog.bintray'
 
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
-//version = '0.6.0-SNAPSHOT'
-version = '0.6.0'
+//version = '0.6.1-SNAPSHOT'
+version = '0.6.1'
 group = 'de.ploing.gradle'
 
 repositories {

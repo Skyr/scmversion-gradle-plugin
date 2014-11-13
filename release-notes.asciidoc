@@ -1,5 +1,9 @@
 = Release notes
 
+== 0.6.1
+
+Fix main class name
+
 == 0.6.0
 
 Adapted for Gradle 2.0, published on jcenter.
