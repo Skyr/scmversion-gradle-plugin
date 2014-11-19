@@ -45,10 +45,12 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     String getHeadVersion() {
         def version = null
-        plugin.scmOperations.headTags.each { tag ->
-            def tagVersion = extractVersion(tag)
-            if (tagVersion!=null) {
-                version = tagVersion
+        if (plugin.scmOperations!=null) {
+            plugin.scmOperations.headTags.each { tag ->
+                def tagVersion = extractVersion(tag)
+                if (tagVersion!=null) {
+                    version = tagVersion
+                }
             }
         }
         return version
@@ -60,10 +62,12 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     List<String> getVersions() {
         def result = []
-        plugin.scmOperations.tags.each { tag ->
-            def tagVersion = extractVersion(tag)
-            if (tagVersion!=null) {
-                result.add(tagVersion)
+        if (plugin.scmOperations!=null) {
+            plugin.scmOperations.tags.each { tag ->
+                def tagVersion = extractVersion(tag)
+                if (tagVersion != null) {
+                    result.add(tagVersion)
+                }
             }
         }
         return result
@@ -86,16 +90,18 @@ abstract class SCMVersionTask extends DefaultTask {
      */
     String getCurrentVersion(boolean releaseTagOnDirty) {
         def version = null
-        if (releaseTagOnDirty || !plugin.scmOperations.isRepoDirty()) {
-            version = headVersion
-        }
-        if (version==null) {
-            def versions = sortedVersions
-            if (versions.size()>0) {
-                def lastVersion = versions.last()
-                version = "${project.scmversion.incVersion(lastVersion)}${project.scmversion.snapshotSuffix}"
-            } else {
-                version = "0${project.scmversion.snapshotSuffix}"
+        if (plugin.scmOperations!=null) {
+            if (releaseTagOnDirty || !plugin.scmOperations.isRepoDirty()) {
+                version = headVersion
+            }
+            if (version==null) {
+                def versions = sortedVersions
+                if (versions.size()>0) {
+                    def lastVersion = versions.last()
+                    version = "${project.scmversion.incVersion(lastVersion)}${project.scmversion.snapshotSuffix}"
+                } else {
+                    version = "0${project.scmversion.snapshotSuffix}"
+                }
             }
         }
         return version
