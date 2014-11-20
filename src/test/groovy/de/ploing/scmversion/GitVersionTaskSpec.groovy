@@ -31,9 +31,20 @@ class GitVersionTaskSpec extends Specification {
         if (!testRepoDir.exists()) {
             testRepoDir.mkdirs()
         }
-        ['linearrepo', 'snapshotrepo'].each { name ->
+        ['norepo', 'linearrepo', 'snapshotrepo'].each { name ->
             Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
         }
+    }
+
+    def "Missing scm is handled gracefully"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'norepo')).build()
+        when:
+            project.apply plugin: SCMVersionPlugin
+            project.tasks.scmInit.scmInit()
+            project.tasks.setVersion.setVersion()
+        then:
+            project.scmversion.scmSystem == null
     }
 
     def "Versions are sorted correctly"() {
