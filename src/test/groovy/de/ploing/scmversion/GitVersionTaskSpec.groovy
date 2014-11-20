@@ -146,16 +146,32 @@ class GitVersionTaskSpec extends Specification {
             props.getProperty('dirty')=='false'
     }
 
-    def "scm in parent directory is discovered"() {
+    def "scm in parent directory is not discovered"() {
         setup:
             Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'linearrepo/src')).build()
             project.apply plugin: SCMVersionPlugin
             project.scmversion {
                 releaseTagPattern = 'rev-([0-9.]*)'
+                scmRootSearchDepth = 0
             }
         when:
             project.tasks.setVersion.setVersion()
         then:
-            project.version=='1.0'
+            project.scmversion.scmSystem == null
+    }
+
+    def "scm in parent directory is discovered if search is enabled"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'linearrepo/src')).build()
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion {
+                releaseTagPattern = 'rev-([0-9.]*)'
+                scmRootSearchDepth = 1
+            }
+        when:
+            project.tasks.setVersion.setVersion()
+        then:
+            project.scmversion.scmSystem == 'git'
+            project.version == '1.0'
     }
 }

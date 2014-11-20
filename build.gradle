@@ -21,8 +21,8 @@ apply plugin: 'com.jfrog.bintray'
 
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
-//version = '0.6.2-SNAPSHOT'
-version = '0.6.2'
+version = '0.6.3-SNAPSHOT'
+//version = '0.6.3'
 group = 'de.ploing.gradle'
 
 targetCompatibility = '1.6'
@@ -34,7 +34,7 @@ repositories {
 dependencies {
   compile gradleApi()
   // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
-  compile 'org.eclipse.jgit:org.eclipse.jgit:3.4.1.201406201815-r'
+  compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
     // groovy localGroovy()
   testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
     exclude group: 'org.codehaus.groovy'  // Spock seems to pull in incompatible version

@@ -23,6 +23,7 @@ class SCMVersionPluginExtension {
     String snapshotSuffix = '-SNAPSHOT'
     String scmSystem
     String propertyFilename
+    Integer scmRootSearchDepth = 0
     Closure versionComparator = { a,b ->
         return compareVersions(
             a.split('\\.').collect { Integer.parseInt(it) },

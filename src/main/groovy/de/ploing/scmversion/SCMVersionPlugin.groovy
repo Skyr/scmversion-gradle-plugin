@@ -31,7 +31,7 @@ class SCMVersionPlugin implements Plugin<Project> {
     def logger
     private boolean scmOpsInitialized = false
     private SCMOperations scmOps = null
-    static final List<SCMDetector> scmPlugins = [ new GitDetector() ]
+    private List<SCMDetector> scmPlugins = [ ]
 
     @Override
     void apply(Project project) {
@@ -39,6 +39,8 @@ class SCMVersionPlugin implements Plugin<Project> {
         logger = project.logger
         // Register extension first - avoid gradle errors in case of initialization problems
         project.extensions.create('scmversion', SCMVersionPluginExtension)
+        // Initialize scm detectors
+        scmPlugins.add(new GitDetector(project.scmversion))
         // Setup tasks
         Task initTask = project.task('scmInit', type: InitTask, {
             plugin = this
