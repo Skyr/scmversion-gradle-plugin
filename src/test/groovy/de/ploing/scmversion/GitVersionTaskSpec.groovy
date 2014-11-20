@@ -145,4 +145,17 @@ class GitVersionTaskSpec extends Specification {
             props.getProperty('version')=='1.1-SNAPSHOT'
             props.getProperty('dirty')=='false'
     }
+
+    def "scm in parent directory is discovered"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'linearrepo/src')).build()
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion {
+                releaseTagPattern = 'rev-([0-9.]*)'
+            }
+        when:
+            project.tasks.setVersion.setVersion()
+        then:
+            project.version=='1.0'
+    }
 }
