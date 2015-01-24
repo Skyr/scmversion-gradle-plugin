@@ -1,11 +1,12 @@
 buildscript {
   repositories {
+    mavenCentral()
     jcenter()
   }
 
   dependencies {
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.5.0'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.1.0'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
   }
 }
@@ -16,16 +17,18 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'cobertura'
-apply plugin: 'coveralls'
+apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.jfrog.bintray'
 
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
-//version = '0.6.4-SNAPSHOT'
-version = '0.6.3'
+version = '0.6.4-SNAPSHOT'
+//version = '0.6.3'
 group = 'de.ploing.gradle'
 
 targetCompatibility = '1.6'
+
+cobertura.coverageFormats = ['html', 'xml']
 
 repositories {
   mavenCentral()
