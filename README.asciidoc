@@ -16,7 +16,7 @@ Gradle 2.0 or later:
 [source,groovy]
 ----
 plugins {
-  id "de.ploing.scmversion" version "0.6.2"
+  id "de.ploing.scmversion" version "0.6.3"
 }
 ----
 
@@ -30,7 +30,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.6.2'
+    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.6.3'
   }
 }
 
@@ -105,6 +105,24 @@ If you choose to use a different pattern, you not only have to adapt the `releas
 `incVersion`::
   A closure taking one version number as parameter and returns a new version string.
   The purpose of this closure is to determine the version string used for snapshot versions, i.e. the "next" version after the latest one.
+
+=== scm root outside project root
+
+By default, the plugin assumes that the project root equals the scm root. This is true in most standard cases, but
+a multiproject setup hosted in one scm repository breaks this assumption. If your scm root lies outside your project,
+you can tell the plugin to search for it above the project root directory:
+
+[source,groovy]
+----
+scmversion {
+  scmRootSearchDepth = 2
+}
+----
+
+The parameter gives the maximum number of directory levels to search for the scm root.
+The example given above means that the scm root is first expected in the project root; if not found,
+one directory level above the project root is checked; if still not found, the search ascends another
+directory level. If no scm is present here, the plugin will throw an error.
 
 == License
 

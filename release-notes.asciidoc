@@ -1,5 +1,9 @@
 = Release notes
 
+== 0.6.3
+
+New option `scmRootSearchDepth`.
+
 == 0.6.2
 
 Set Java compatibility to 1.6.
