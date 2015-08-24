@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ploing.scmversion.task
+package de.ploing.scmversion
 
-import org.gradle.api.tasks.TaskAction
+import de.ploing.scmversion.task.SetVersionTask
+
 
 /**
+ * During initialization, the plugin will set the version attribute (which, conveniently, is of type Object)
+ * to an instance of this class. If the project configuration accesses this instance, the toString method
+ * will return the generated version string.<p>
+ * Please beware that the plugin initialization must be done beforehand!
+ *
  * @author Stefan Schlott
  */
-class SetVersionTask extends SCMVersionTask {
-    def getVersion() {
-        return getCurrentVersion(false)
+class VersionProxy {
+    SetVersionTask task
+
+    VersionProxy(SetVersionTask task) {
+        this.task = task
     }
 
-    @TaskAction
-    def setVersion() {
-        if (plugin.scmOperations!=null) {
-            if (plugin.scmOperations.isRepoDirty()) {
-                logger.info('Repo is dirty, not checking for release tag')
-            }
-            def version = getVersion()
-            logger.info("Repo version is ${version}")
-            project.version = version
-        }
+    @Override
+    String toString() {
+        return task.getVersion()
     }
 }

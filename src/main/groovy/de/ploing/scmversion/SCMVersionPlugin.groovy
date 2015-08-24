@@ -51,6 +51,7 @@ class SCMVersionPlugin implements Plugin<Project> {
         Task createVersionFileTask = project.task('createVersionFile', type: CreateVersionFileTask, {
             plugin = this
         })
+        project.version = new VersionProxy(setVersionTask)
         autoconfigSetVersionTask(setVersionTask)
         autoconfigCreateVersionFileTask(createVersionFileTask)
     }

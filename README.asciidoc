@@ -124,6 +124,17 @@ The example given above means that the scm root is first expected in the project
 one directory level above the project root is checked; if still not found, the search ascends another
 directory level. If no scm is present here, the plugin will throw an error.
 
+=== Accessing `project.version` within the build script
+
+The version is set by executing a task after initializing the project.
+This means that the version variable is not (yet) set to the desired value when using it e.g. in string concatenations.
+To allow access to the calculated version, the version field is set to a proxy object, which determines the version
+in its toString method on demand. After project initialization, the proxy object is replaced by a regular string.
+
+Bear in mind that the proxy object can only reflect the current state; this means that the order of your statements
+is of importance. You have to make sure that this plugin is properly configured before you access the version information.
+
+
 == License
 
 Copyright 2014 by Stefan Schlott

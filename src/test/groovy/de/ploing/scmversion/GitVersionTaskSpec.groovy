@@ -17,6 +17,7 @@ package de.ploing.scmversion
 
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -173,5 +174,20 @@ class GitVersionTaskSpec extends Specification {
         then:
             project.scmversion.scmSystem == 'git'
             project.version == '1.0'
+    }
+
+    def "Version of dependency can be read via proxy class"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'linearrepo')).build()
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion {
+                releaseTagPattern = 'rev-([0-9.]*)'
+            }
+        when:
+            def someName = "foo:bar:$project.version"
+            project.tasks.setVersion.setVersion()
+        then:
+            project.version=='1.0'
+            someName.endsWith('1.0')
     }
 }
