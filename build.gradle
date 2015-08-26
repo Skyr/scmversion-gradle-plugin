@@ -2,12 +2,16 @@ buildscript {
   repositories {
     mavenCentral()
     jcenter()
+    maven {
+      url 'https://plugins.gradle.org/m2/'
+    }
   }
 
   dependencies {
     classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.1.0'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+    classpath 'com.gradle.publish:plugin-publish-plugin:0.9.1'
   }
 }
 
@@ -19,12 +23,14 @@ apply plugin: 'maven-publish'
 apply plugin: 'cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.gradle.plugin-publish'
 
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
-version = '0.6.4-SNAPSHOT'
-//version = '0.6.3'
 group = 'de.ploing.gradle'
+//version = '0.6.5-SNAPSHOT'
+version = '0.6.4'
+
 
 targetCompatibility = '1.6'
 
@@ -36,9 +42,9 @@ repositories {
 
 dependencies {
   compile gradleApi()
+  compile localGroovy()
   // compile 'org.tmatesoft.svnkit:svnkit:1.7.8'
   compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.2.201411120430-r'
-    // groovy localGroovy()
   testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
     exclude group: 'org.codehaus.groovy'  // Spock seems to pull in incompatible version
   }
@@ -69,6 +75,7 @@ artifacts {
 publishing {
   publications {
     mavenCustom(MavenPublication) {
+      artifactId 'scmversion-gradle-plugin'
       from components.java
         artifact sourceJar {
             classifier "source"
@@ -112,6 +119,19 @@ bintray {
     labels = ['gradle', 'plugin', 'scmversion']
     version {
       attributes = ['gradle-plugin': 'de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin']
+    }
+  }
+}
+
+pluginBundle {
+  website = 'http://stefan.ploing.de/projects/scmversion-gradle-plugin/'
+  vcsUrl = 'https://github.com/Skyr/scmversion-gradle-plugin'
+  description = 'A Gradle plugin that exports information from the version control system to the build system'
+  tags = [ 'scm', 'vcs', 'version', 'auto-versioning', 'git' ]
+  plugins {
+    scmversionGradlePlugin {
+      id = 'de.ploing.scmversion'
+      displayName = 'SCM Version'
     }
   }
 }

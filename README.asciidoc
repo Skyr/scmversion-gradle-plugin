@@ -4,6 +4,8 @@ Your software should be versioned, and the assigned version numbers should be re
 This plugin detects tags of your source control management matching a given pattern, extracts the version number, and makes it available both to Gradle and optionally your program.
 It rids you of the nuisance to keep the version number in your scm and the version number for your deployment in sync.
 
+The plugin is fully self-contained, i.e. it does not rely on the availability of any version management binaries on the system.
+
 image:https://travis-ci.org/Skyr/scmversion-gradle-plugin.png?branch=master["Build Status", link="https://travis-ci.org/Skyr/scmversion-gradle-plugin"]
 image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Coverage Status", link="https://coveralls.io/r/Skyr/scmversion-gradle-plugin"]
 
@@ -11,12 +13,12 @@ image:https://coveralls.io/repos/Skyr/scmversion-gradle-plugin/badge.png["Covera
 
 The plugin is applied as given below:
 
-Gradle 2.0 or later:
+Gradle 2.1 or later:
 
 [source,groovy]
 ----
 plugins {
-  id "de.ploing.scmversion" version "0.6.3"
+  id 'de.ploing.scmversion' version '0.6.4'
 }
 ----
 
@@ -26,11 +28,12 @@ Older versions of Gradle:
 ----
 buildscript {
   repositories {
-    jcenter()
+    maven {
+      url 'https://plugins.gradle.org/m2/'
+    }
   }
-
   dependencies {
-    classpath 'de.ploing.gradle:scmversion-gradle-plugin:0.6.3'
+    classpath 'gradle.plugin.de.ploing.gradle:scmversion-gradle-plugin:0.6.4'
   }
 }
 
@@ -137,7 +140,7 @@ is of importance. You have to make sure that this plugin is properly configured 
 
 == License
 
-Copyright 2014 by Stefan Schlott
+Copyright 2014 - 2015 by Stefan Schlott
 
 Licensed under the http://www.apache.org/licenses/LICENSE-2.0[Apache License, Version 2.0].
 

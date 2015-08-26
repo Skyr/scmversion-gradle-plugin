@@ -1,5 +1,10 @@
 = Release notes
 
+== 0.6.4
+
+Allow usage of `project.version` within the gradle
+build file (see readme on constraints).
+
 == 0.6.3
 
 New option `scmRootSearchDepth`.
