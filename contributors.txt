@@ -1,0 +1,6 @@
+Thanks to all contributors for sending pull reqests, code changes, test cases,
+...!
+
+Tim Roes
+Hermann Kneissel
+
