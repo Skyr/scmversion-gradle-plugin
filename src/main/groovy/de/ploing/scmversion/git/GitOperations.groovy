@@ -58,7 +58,12 @@ class GitOperations implements SCMOperations {
         def headVersion = getHeadVersion()
         Map<String, Ref> refList = repository.getTags()
         for (Map.Entry<String, Ref> entry: refList.entrySet()) {
-            if (headVersion.equalsIgnoreCase(entry.value.objectId.name)) {
+            Ref r = entry.value
+            if (!r.peeled) {
+              r = repository.peel(r)
+            }
+            if ((r.peeledObjectId != null && headVersion.equalsIgnoreCase(r.peeledObjectId.name)) ||
+                headVersion.equalsIgnoreCase(r.objectId.name)) {
                 result.add(entry.key)
             }
         }

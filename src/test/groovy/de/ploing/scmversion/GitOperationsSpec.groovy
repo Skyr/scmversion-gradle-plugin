@@ -32,7 +32,7 @@ class GitOperationsSpec extends Specification {
         if (!testRepoDir.exists()) {
             testRepoDir.mkdirs()
         }
-        ['emptyrepo', 'linearrepo', 'mergedrepo'].each { name ->
+        ['emptyrepo', 'linearrepo', 'mergedrepo', 'jgittaggedrepo'].each { name ->
             Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
         }
     }
@@ -97,5 +97,16 @@ class GitOperationsSpec extends Specification {
         then:
             head!=null
             tags.size()==4
+    }
+
+    def "Head tag detected even if tagged by eclipse"() {
+        setup:
+            SCMOperations ops = new GitOperations(new File(testRepoDir, 'jgittaggedrepo'))
+        when:
+            def head = ops.headVersion
+            def tags = ops.headTags
+        then:
+            head!=null
+            tags.size()==1
     }
 }
