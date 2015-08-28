@@ -28,8 +28,8 @@ apply plugin: 'com.gradle.plugin-publish'
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
 group = 'de.ploing.gradle'
-version = '0.6.5-SNAPSHOT'
-//version = '0.6.4'
+//version = '0.6.6-SNAPSHOT'
+version = '0.6.5'
 
 
 targetCompatibility = '1.6'
