@@ -55,7 +55,7 @@ When the plugin is applied, it will replace the `version` property of gradle wit
 * Otherwise, the highest version number from a tag is determined, the least significant number is increased by one and appended by the snapshot suffix
 * If no version tag is found, the version number `0` is assumed
 
-The version property is e.g. used by the maven plugin for determining the version inormation for assembled jar files.
+The version property is e.g. used by the maven plugin for determining the version information for assembled jar files.
 
 The task `setVersion` is provided for this purpose; it is automatically called after setting up the project.
 
