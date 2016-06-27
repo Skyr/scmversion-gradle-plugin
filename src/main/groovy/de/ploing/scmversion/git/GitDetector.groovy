@@ -4,10 +4,14 @@ import de.ploing.scmversion.SCMDetector
 import de.ploing.scmversion.SCMOperations
 import de.ploing.scmversion.SCMVersionPluginExtension
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 class GitDetector implements SCMDetector {
     private SCMVersionPluginExtension params
+    private final Logger logger = LoggerFactory.getLogger(de.ploing.scmversion.git.GitDetector.class.getName())
+
     GitDetector(SCMVersionPluginExtension params) {
         this.params = params
     }
@@ -41,8 +45,19 @@ class GitDetector implements SCMDetector {
         final int steps = params.scmRootSearchDepth>0 ? params.scmRootSearchDepth : 0
         for (int i=0; i<=steps; i++) {
             def gitDir = new File("${searchDir.absolutePath}${File.separator}.git")
-            if (gitDir.exists() && gitDir.isDirectory()) {
-                return searchDir
+            if (gitDir.exists()) {
+                if (gitDir.isDirectory()) {
+                    return searchDir
+                }
+                if (gitDir.isFile()) {
+                    def firstLine = gitDir.withReader { it.readLine() }
+                    if (firstLine.startsWith('gitdir:')) {
+                        // reference to git repo - usually used by submodules
+                        return searchDir
+                    } else {
+                        logger.warn("Malformed .git file ${searchDir}")
+                    }
+                }
             }
             def parentDir = searchDir.getParentFile()
             if (parentDir!=null) {
