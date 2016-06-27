@@ -31,6 +31,8 @@ class GitVersionTaskSpec extends Specification {
         testRepoDir = new File('./build/testrepos').absoluteFile
         if (!testRepoDir.exists()) {
             testRepoDir.mkdirs()
+        } else {
+            System.err.println("Test repo root ${testRepoDir} exists - if tests fail, remove before running")
         }
         ['norepo', 'linearrepo', 'snapshotrepo', 'submodulerepo'].each { name ->
             Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
