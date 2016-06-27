@@ -32,7 +32,7 @@ class GitVersionTaskSpec extends Specification {
         if (!testRepoDir.exists()) {
             testRepoDir.mkdirs()
         }
-        ['norepo', 'linearrepo', 'snapshotrepo'].each { name ->
+        ['norepo', 'linearrepo', 'snapshotrepo', 'submodulerepo'].each { name ->
             Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
         }
     }
@@ -189,5 +189,20 @@ class GitVersionTaskSpec extends Specification {
         then:
             project.version=='1.0'
             someName.endsWith('1.0')
+    }
+
+    def "submodule is properly handled"() {
+        setup:
+            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'submodulerepo/submodule')).build()
+            project.apply plugin: SCMVersionPlugin
+            project.scmversion {
+                releaseTagPattern = 'rev-([0-9.]*)'
+                scmRootSearchDepth = 1
+            }
+        when:
+            project.tasks.setVersion.setVersion()
+        then:
+            project.scmversion.scmSystem == 'git'
+            project.version == '1.0'
     }
 }
