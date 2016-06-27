@@ -11,7 +11,7 @@ buildscript {
     classpath 'net.saliman:gradle-cobertura-plugin:2.3.2'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-    classpath 'com.gradle.publish:plugin-publish-plugin:0.9.4'
+    classpath 'com.gradle.publish:plugin-publish-plugin:0.9.1'
   }
 }
 
@@ -28,8 +28,8 @@ apply plugin: 'com.gradle.plugin-publish'
 // Bintray attribute: gradle-plugin =  de.ploing.scmversion:de.ploing.gradle:scmversion-gradle-plugin
 
 group = 'de.ploing.gradle'
-version = '0.6.6-SNAPSHOT'
-//version = '0.6.5'
+//version = '0.6.7-SNAPSHOT'
+version = '0.6.6'
 
 
 targetCompatibility = '1.6'

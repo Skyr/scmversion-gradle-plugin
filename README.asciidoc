@@ -18,7 +18,7 @@ Gradle 2.1 or later:
 [source,groovy]
 ----
 plugins {
-  id 'de.ploing.scmversion' version '0.6.5'
+  id 'de.ploing.scmversion' version '0.6.6'
 }
 ----
 
@@ -33,7 +33,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'gradle.plugin.de.ploing.gradle:scmversion-gradle-plugin:0.6.5'
+    classpath 'gradle.plugin.de.ploing.gradle:scmversion-gradle-plugin:0.6.6'
   }
 }
 

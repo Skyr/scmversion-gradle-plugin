@@ -1,5 +1,11 @@
 = Release notes
 
+== 0.6.6
+
+Fix handling of submodules
+
+Version bump of Gradle, used plugins, and JGit.
+
 == 0.6.4
 
 Allow usage of `project.version` within the gradle
