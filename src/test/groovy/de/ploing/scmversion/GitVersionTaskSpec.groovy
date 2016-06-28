@@ -19,13 +19,20 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.Unroll
 
 /**
  * @author Stefan Schlott
  */
 class GitVersionTaskSpec extends Specification {
+    @Rule final TemporaryFolder tempDir = new TemporaryFolder()
     static File testRepoDir
+    File buildFile
 
     def setupSpec() {
         testRepoDir = new File('./build/testrepos').absoluteFile
@@ -37,6 +44,10 @@ class GitVersionTaskSpec extends Specification {
         ['norepo', 'linearrepo', 'snapshotrepo', 'submodulerepo'].each { name ->
             Tools.extractZip(getClass().classLoader.getResourceAsStream("${name}.zip"), testRepoDir)
         }
+    }
+
+    def setup() {
+        buildFile = tempDir.newFile('build.gradle')
     }
 
     def "Missing scm is handled gracefully"() {
@@ -193,18 +204,33 @@ class GitVersionTaskSpec extends Specification {
             someName.endsWith('1.0')
     }
 
+    @Unroll("submodule is properly handled (Gradle #version)")
     def "submodule is properly handled"() {
         setup:
-            Project project = ProjectBuilder.builder().withProjectDir(new File(testRepoDir, 'submodulerepo/submodule')).build()
-            project.apply plugin: SCMVersionPlugin
-            project.scmversion {
-                releaseTagPattern = 'rev-([0-9.]*)'
-                scmRootSearchDepth = 1
-            }
+            buildFile << '''
+            |plugins {
+            |  id 'de.ploing.scmversion'
+            |}
+            |scmversion {
+            |  releaseTagPattern = 'rev-([0-9.]*)'
+            |  scmRootSearchDepth = 1
+            |}
+            |task execTest(dependsOn: 'setVersion') {
+            |  println "scmSystem=${scmversion.scmSystem}#"
+            |  println "version=${version}#"
+            |}
+            '''.stripMargin()
         when:
-            project.tasks.setVersion.setVersion()
+            BuildResult result = GradleRunner.create()
+                .withGradleVersion(version)
+                .withProjectDir(new File(testRepoDir, 'submodulerepo/submodule'))
+                .withArguments('-b', buildFile.toString(), 'execTest')
+                .withPluginClasspath()
+                .build()
         then:
-            project.scmversion.scmSystem == 'git'
-            project.version == '1.0'
+            result.output.contains('scmSystem=git#')
+            result.output.contains('version=1.0#')
+        where:
+            version << [ '2.13', '2.14' ]
     }
 }
